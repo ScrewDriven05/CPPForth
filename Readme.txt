@@ -1,4 +1,4 @@
-This is my own attempt at writing a Forth interpreter from (almost) scratch in C++. 
+This is my own attempt at writing an interpreter for the Forth programming language from (almost) scratch in C++. 
 
 Now I am aware that there are multiple, far superior libraries available for a lot of the stuff that I am 
 implementing from the ground up, (such as dictionaries, dynamic arrays, etc.) but this is also a 
