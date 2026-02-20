@@ -141,9 +141,9 @@ class Dictionary{
         
     }
 
-    V give(K k){
+    V give(K& k){
         if(keys.find(k)!=-1){return values.give(keys.find(k));}
-        else{cout<<k<<"?";return V();}//forth style error   
+        else{cout<<k<<"?";return nullptr;}//forth style error   
     }
 
     int size(){
@@ -166,19 +166,35 @@ class Dictionary{
 };
 
 
+void func1(){cout<<"func 1";}
+void func2(){cout<<"func 2";}
+void func3(){cout<<"func 3";}
+void func4(){cout<<"func 4";}
+void func5(){cout<<"func 5";}
+
+
 int main(){
 
-    DynArr<int> b(2, true);
-    b.add(69);
-    b.add(32);
-    b.add(19);
+    Dictionary<string, void(*)()> new_dict(25, true);
+    
+    new_dict.add("1", func1);
+    new_dict.add("2", func2);
+    new_dict.add("3", func3);
+    new_dict.add("4", func4);
+    new_dict.add("5", func5);
 
-    Dictionary<string, float> a(2, true);
-    a.add("R", 13.03);
-    a.add("A", 15.11);
-    a.add("M", 27.08);
+    string s;
+    cout<<"Enter input: "<<endl;
+    cin>>s;
 
+    auto fn=new_dict.give(s);
 
-    a.info();
+    if(fn){
+        fn();
+    }
+
     
 }
+
+
+    
