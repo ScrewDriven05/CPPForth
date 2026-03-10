@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 using namespace std;
 
 /*
@@ -108,8 +109,10 @@ class DynArr{
         if(i<=itop){return arr[i];}
         
         return T();}//num array will never be searched so it's okay
-        
+
     };
+
+    
 
 template<typename K, typename V>
 class Dictionary{
@@ -122,11 +125,14 @@ class Dictionary{
 
     Dictionary(int capacity=16, bool resize=true):dict_cap(capacity),resize(resize), keys(dict_cap,resize), values(dict_cap, resize){}
 
-    void add(K key, V value){
+    void add(const K& key, const V& value){
         if(keys.find(key)==-1)
         {
             keys.add(key);
             values.add(value);
+        }
+        else{
+            cout<<"Key already defined";
         }               
     }
     void remove(int i){
@@ -135,14 +141,16 @@ class Dictionary{
             values.remove(i);
         }
     }
-    void key_remove(K k){
+
+    void key_remove(const K& k){
         int i=keys.find(k);
         if(i!=-1){remove(i);}
         
     }
 
     V give(K& k){
-        if(keys.find(k)!=-1){return values.give(keys.find(k));}
+        int index=keys.find(k);
+        if(index!=-1){return values.give(index);}
         else{cout<<k<<"?";return nullptr;}//forth style error   
     }
 
@@ -166,33 +174,57 @@ class Dictionary{
 };
 
 
-void func1(){cout<<"func 1";}
-void func2(){cout<<"func 2";}
-void func3(){cout<<"func 3";}
-void func4(){cout<<"func 4";}
-void func5(){cout<<"func 5";}
+//Had my midsems >:(
+
+class Word{
+    
+}; //Master word class, new classes to be derived from it
+
+class Forth{
+
+    bool is_num(string s){
+        try{
+            stof(s);
+            return true;
+        }
+        catch(...){
+            return false;
+        }
+    }
+    void allocate(string& tok){
+        if(is_num(tok)){
+            main_stack.add(stof(tok));
+        }
+        else {
+            words.give(tok);
+        }
+    }
+    //dis my interpreter
+    DynArr<float> main_stack{256, false};       //program stack
+    Dictionary<string, Word> words {22, true};  //Command map
+    public:
+    void parse(string inp){
+        char delim=' ';
+        while(inp.empty()==0){
+            int pos=inp.find(delim);
+            if(pos==string::npos){
+                allocate(inp);
+                break;
+            }
+            string token=inp.substr(0, pos);
+            allocate(token);
+            inp=inp.erase(0, pos+1);
+        }
+        
+    }
+};
+
 
 
 int main(){
-
-    Dictionary<string, void(*)()> new_dict(25, true);
     
-    new_dict.add("1", func1);
-    new_dict.add("2", func2);
-    new_dict.add("3", func3);
-    new_dict.add("4", func4);
-    new_dict.add("5", func5);
-
-    string s;
-    cout<<"Enter input: "<<endl;
-    cin>>s;
-
-    auto fn=new_dict.give(s);
-
-    if(fn){
-        fn();
-    }
-
+    Forth f;
+    f.parse("1.25 6.3 2.22 8.29 , ,");
     
 }
 
