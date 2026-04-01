@@ -175,7 +175,6 @@ class Dictionary{
 };
 
 
-//Had my midsems >:(
 
 class Word{
 
