@@ -15,9 +15,10 @@ class DynArr{
     T* arr; //array of dynamic type and size
     int capacity;//initial capacity
     bool resizable;//boolean to control resizability
-    int itop;//top index
+    
 
     public:
+    int itop;//top index
     DynArr(int c=5, bool dynamic=true):capacity(c), resizable(dynamic),itop(-1){arr=new T[capacity];}
     ~DynArr(){delete[] arr;}
 
@@ -177,8 +178,20 @@ class Dictionary{
 //Had my midsems >:(
 
 class Word{
-    
+
+    public:
+        virtual void exec(DynArr<float>& stack)=0;
+
 }; //Master word class, new classes to be derived from it
+
+class AddWord:public Word{
+
+    public:
+        void exec(DynArr<float>& stack) override{
+            
+        }
+
+};
 
 class Forth{
 
@@ -201,7 +214,7 @@ class Forth{
     }
     //dis my interpreter
     DynArr<float> main_stack{256, false};       //program stack
-    Dictionary<string, Word> words {22, true};  //Command map
+    Dictionary<string, Word*> words {22, true};  //Command map
     public:
     void parse(string inp){
         char delim=' ';
@@ -229,4 +242,4 @@ int main(){
 }
 
 
-    
+//new commit test, switched over to linux >:)
