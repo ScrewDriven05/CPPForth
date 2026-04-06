@@ -204,31 +204,40 @@ class Forth{
         }
     }
     void allocate(string& tok){
-        if(is_num(tok)){
+        /* if(is_num(tok)){
             main_stack.add(stof(tok));
+            cout<<stof(tok)<<"\n";
         }
         else {
             words.give(tok);
-        }
+        } */
+
+
     }
     //dis my interpreter
     DynArr<float> main_stack{256, false};       //program stack
     Dictionary<string, Word*> words {22, true};  //Command map
     public:
     void parse(string inp){
-        char delim=' ';
-        while(inp.empty()==0){
-            int pos=inp.find(delim);
-            if(pos==string::npos){
-                allocate(inp);
-                break;
+    char delim=' ';
+    int t_start=0;
+    int t_end=0;
+    while(!inp.empty()){
+        while(inp[t_start]==delim){
+            ++t_start;
+            }        
+        t_end=t_start;        
+        while(inp[t_end]!=delim){
+            ++t_end;
             }
-            string token=inp.substr(0, pos);
-            allocate(token);
-            inp=inp.erase(0, pos+1);
-        }
-        
+        string token=inp.substr(t_start, (t_end-t_start));        
+        allocate(token);
+        inp=inp.erase(0, t_end);
+        t_start=0;
+        t_end=0;
+        }             
     }
+
 };
 
 
@@ -242,4 +251,3 @@ int main(){
 
 
 //new commit test, switched over to linux >:)
-//why won't this work??
