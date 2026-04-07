@@ -29,9 +29,9 @@ class DynArr
     T *arr;         // array of dynamic type and size
     int capacity;   // initial capacity
     bool resizable; // boolean to control resizability
-    int itop;       // top index
 
 public:
+    int itop;       // top index
     DynArr(int c = 5, bool dynamic = true) : capacity(c), resizable(dynamic), itop(-1) { arr = new T[capacity]; }
     ~DynArr() { delete[] arr; }
 
@@ -242,23 +242,132 @@ template<typename K, typename V>
 void to_dict()
 */
 
-class Forth
-{
-        
-    //Sometimes, the best thing to do is (partially) start over
-    
+bool is_num(string s){
+    try{
+        stof(s);
+        return true;
+    }
+    catch(...){
+        return false;
+    }
+}
+
+
+//Had my midsems >:(
+
+class Word{
+
+    public:
+        virtual void exec(DynArr<float>& stack)=0;
+
+}; //Master word class, new classes to be derived from it
+
+class PrintWord:public Word{
+
+    public:
+        void exec(DynArr<float>& stack) override{
+            if(stack.size()==0){
+                cout<<"Empty Stack";
+            }
+            else{
+                cout<<stack.give(stack.itop);
+                stack.remove(stack.itop);
+            }
+        }
+
 };
 
-/*
-class Word{
-    virtual void execute(Forth f)=0;
-    ~Word()=default;
+class AddWord:public Word{
+    public:
+        void exec(DynArr<float>& stack) override{
+            if(stack.size()<=2){
+                cout<<"Insufficient Args";
+            }
+            else{
+                float a=stack.give(stack.itop);
+                stack.remove(stack.itop);
+
+                float b=stack.give(stack.itop);
+                stack.remove(stack.itop);
+
+                float sum=a+b;
+                stack.add(sum);
+            }
+        }
 };
-*/
+
+class DumpWord:public Word{
+    public:
+        void exec(DynArr<float>& stack) override{
+            int i=0;
+            while(i<stack.size()){
+                cout<<stack.give(i)<<"  ";
+                i++;
+            }
+        }
+};
+
+class Forth{
+
+    bool is_num(string s){
+        try{
+            stof(s);
+            return true;
+        }
+        catch(...){
+            return false;
+        }
+    }
+    void allocate(string& tok){
+        if(is_num(tok)){
+            main_stack.add(stof(tok));
+        }
+        else {
+            Word* w=words.give(tok);
+            w->exec(main_stack);
+        }
+
+
+    }
+    
+    //dis my interpreter
+    DynArr<float> main_stack{256, false};       //program stack
+    Dictionary<string, Word*> words {22, true};  //Command map
+
+    public:
+
+    Forth(){
+        words.add(",", new PrintWord());
+        words.add("+", new AddWord());
+        words.add(".", new DumpWord());
+    }
+
+    void parse(string inp){
+    char delim=' ';
+    int t_start=0;
+    int t_end=0;
+    while(!inp.empty()){
+        while(inp[t_start]==delim){
+            ++t_start;
+            }        
+        t_end=t_start;        
+        while(inp[t_end]!=delim){
+            ++t_end;
+            }
+        string token=inp.substr(t_start, (t_end-t_start));        
+        allocate(token);
+        inp=inp.erase(0, t_end);
+        t_start=0;
+        t_end=0;
+        }             
+    }
+
+};
 
 int main()
 {
-
+    Forth f;
+    f.parse("2.29 8.825 3.62 + .");
     return 0;
 }
 

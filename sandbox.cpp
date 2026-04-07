@@ -183,13 +183,49 @@ class Word{
 
 }; //Master word class, new classes to be derived from it
 
-class AddWord:public Word{
+class PrintWord:public Word{
 
     public:
         void exec(DynArr<float>& stack) override{
-            
+            if(stack.size()==0){
+                cout<<"Empty Stack";
+            }
+            else{
+                cout<<stack.give(stack.itop);
+                stack.remove(stack.itop);
+            }
         }
 
+};
+
+class AddWord:public Word{
+    public:
+        void exec(DynArr<float>& stack) override{
+            if(stack.size()<=2){
+                cout<<"Insufficient Args";
+            }
+            else{
+                float a=stack.give(stack.itop);
+                stack.remove(stack.itop);
+
+                float b=stack.give(stack.itop);
+                stack.remove(stack.itop);
+
+                float sum=a+b;
+                stack.add(sum);
+            }
+        }
+};
+
+class DumpWord:public Word{
+    public:
+        void exec(DynArr<float>& stack) override{
+            int i=0;
+            while(i<stack.size()){
+                cout<<stack.give(i)<<"  ";
+                i++;
+            }
+        }
 };
 
 class Forth{
@@ -204,20 +240,29 @@ class Forth{
         }
     }
     void allocate(string& tok){
-        /* if(is_num(tok)){
+        if(is_num(tok)){
             main_stack.add(stof(tok));
-            cout<<stof(tok)<<"\n";
         }
         else {
-            words.give(tok);
-        } */
+            Word* w=words.give(tok);
+            w->exec(main_stack);
+        }
 
 
     }
+    
     //dis my interpreter
     DynArr<float> main_stack{256, false};       //program stack
     Dictionary<string, Word*> words {22, true};  //Command map
+
     public:
+
+    Forth(){
+        words.add(",", new PrintWord());
+        words.add("+", new AddWord());
+        words.add(".", new DumpWord());
+    }
+
     void parse(string inp){
     char delim=' ';
     int t_start=0;
@@ -245,7 +290,7 @@ class Forth{
 int main(){
     
     Forth f;
-    f.parse("1.25 6.3 2.22 8.29 , ,");
+    f.parse("1.25 6.3 2.22 8.29 + .");
     
 }
 
